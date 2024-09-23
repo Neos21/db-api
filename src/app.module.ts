@@ -1,14 +1,16 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { ConfigModule , ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 
 // Imports
 import { configuration } from './core/configs/configuration';
+import { JsonDbModule } from './modules/json-db/json-db.module';
 // Controllers
 import { AppController } from './app.controller';
 // Providers
 import { AppService } from './app.service';
 // Configure
 import { AccessLogMiddleware } from './core/middlewares/access-log.middleware';
+import { SharedModule } from './modules/shared/shared.module';
 
 @Module({
   imports: [
@@ -16,7 +18,9 @@ import { AccessLogMiddleware } from './core/middlewares/access-log.middleware';
     ConfigModule.forRoot({
       isGlobal: true,  // 各 Module での `imports` を不要にする
       load: [configuration]  // 環境変数を読み取り適宜デフォルト値を割り当てるオブジェクトをロードする
-    })
+    }),
+    JsonDbModule,
+    SharedModule
   ],
   controllers: [
     AppController

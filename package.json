@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./dist/main.js",
     "build": "nest build",
-    "dev": "nest start --debug --watch"
+    "dev": "nest start --debug --watch",
+    "nest": "nest"
   },
   "author": "Neo <neos21@gmail.com> (https://neos21.net/)",
   "license": "MIT",
