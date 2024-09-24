@@ -1,13 +1,13 @@
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 
-import { ValidateCredentialService } from '../shared/validate-credential.service';
+import { ValidatorService } from '../shared/validator.service';
 import { JsonDbService } from './json-db.service';
 
 @Controller('json-db')
 export class JsonDbController {
   constructor(
-    private readonly validateCredentialService: ValidateCredentialService,
+    private readonly validatorService: ValidatorService,
     private readonly jsonDbService: JsonDbService
   ) { }
   
@@ -28,7 +28,7 @@ export class JsonDbController {
   public async createDb(@Body('credential') credential: string, @Body('db_name') dbName: string, @Body('db_credential') dbCredential: string, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateCredential(credential, res)) return;
-      const validateResult = this.jsonDbService.validateDbInput(dbName, dbCredential);
+      const validateResult = this.validatorService.validateDbInput(dbName, dbCredential);
       if(validateResult) return res.status(HttpStatus.BAD_REQUEST).json({ error: validateResult });
       if(this.jsonDbService.existsDbName(dbName)) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'The Name Of DB Already Exists' });
     
@@ -84,7 +84,7 @@ export class JsonDbController {
   public async create(@Body('db_name') dbName: string, @Body('db_credential') dbCredential: string, @Body('item') item: any, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateDb(dbName, dbCredential, res)) return;
-      if(!this.jsonDbService.isObject(item)) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'The Item Is Not A Object' });
+      if(!this.validatorService.isObject(item)) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'The Item Is Not A Object' });
       
       const result = await this.jsonDbService.create(dbName, item);
       return res.status(HttpStatus.OK).json({ result });
@@ -98,7 +98,7 @@ export class JsonDbController {
   public async putById(@Body('db_name') dbName: string, @Body('db_credential') dbCredential: string, @Body('id') id: number, @Body('item') item: any, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateDb(dbName, dbCredential, res)) return;
-      if(!this.jsonDbService.isObject(item)) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'The Item Is Not A Object' });
+      if(!this.validatorService.isObject(item)) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'The Item Is Not A Object' });
       
       const result = await this.jsonDbService.putById(dbName, id, item);
       if(result == null) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'The Item Not Found (Invalid ID)' });
@@ -113,7 +113,7 @@ export class JsonDbController {
   public async patchById(@Body('db_name') dbName: string, @Body('db_credential') dbCredential: string, @Body('id') id: number, @Body('item') item: any, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateDb(dbName, dbCredential, res)) return;
-      if(!this.jsonDbService.isObject(item)) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'The Item Is Not A Object' });
+      if(!this.validatorService.isObject(item)) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'The Item Is Not A Object' });
       
       const result = await this.jsonDbService.patchById(dbName, id, item);
       if(result == null) return res.status(HttpStatus.BAD_REQUEST).json({ error: 'The Item Not Found (Invalid ID)' });
@@ -139,7 +139,7 @@ export class JsonDbController {
   }
   
   private validateCredential(credential: string, res: Response): boolean {
-    if(!this.validateCredentialService.validateCredential(credential)) {
+    if(!this.validatorService.validateCredential(credential)) {
       res.status(HttpStatus.BAD_REQUEST).json({ error: 'Invalid Credential' });
       return false;
     }
@@ -147,7 +147,7 @@ export class JsonDbController {
   }
   
   private validateDb(dbName: string, dbCredential: string, res: Response): boolean {
-    const validateResult = this.jsonDbService.validateDbInput(dbName, dbCredential);
+    const validateResult = this.validatorService.validateDbInput(dbName, dbCredential);
     if(validateResult) {
       res.status(HttpStatus.BAD_REQUEST).json({ error: validateResult });
       return false;

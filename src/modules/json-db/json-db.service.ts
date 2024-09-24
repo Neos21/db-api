@@ -3,7 +3,6 @@ import * as path from 'node:path';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ValidateCredentialService } from '../shared/validate-credential.service';
 import { Low } from '../../low-db/core-low';
 import { JSONFilePreset } from '../../low-db/presets';
 
@@ -22,10 +21,7 @@ export class JsonDbService {
   private readonly jsonDbDirectoryPath: string;
   private masterDb: Low<MasterDbData>;
   
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly validateCredentialService: ValidateCredentialService
-  ) {
+  constructor(private readonly configService: ConfigService) {
     this.dbDirectoryPath     = this.configService.get('dbDirectoryPath');
     this.jsonDbDirectoryPath = this.configService.get('jsonDbDirectoryPath');
     (async () => {
@@ -122,17 +118,6 @@ export class JsonDbService {
     return item;  // 削除した Item を返しておく
   }
   
-  /** DB 名と DB クレデンシャルの値が正常か否か・不正な場合はエラーメッセージを返す */
-  public validateDbInput(dbName: string, dbCredential: string): string | null {
-    if(this.validateCredentialService.isEmpty(dbName)      ) return 'DB Name Is Empty';
-    if(this.validateCredentialService.isEmpty(dbCredential)) return 'DB Credential Is Empty';
-    if(dbName.length       > 50) return 'DB Name Is Too Long';
-    if(dbCredential.length <  8) return 'DB Credential Is Too Short. Please Input 8 Characters Or More';
-    if(dbCredential.length > 20) return 'DB Credential Is Too Long. Please Input 20 Characters Or Less';
-    if(!(/^[a-z]+[a-z-]*[^-]$/u).test(dbName)) return 'Invalid DB Name Pattern';  // 半角小文字・ハイフンケースのみ許容する
-    return null;
-  }
-  
   /** 指定の DB 名がマスター DB に定義されているか否か */
   public existsDbName(dbName: string): boolean {
     const foundDatabase = this.masterDb.data.databases.find(database => database.dbName === dbName);
@@ -148,10 +133,5 @@ export class JsonDbService {
   /** DB を読み込む・存在しない場合はデフォルト値を当てる */
   private async createOrReadDb(dbName: string): Promise<Low<any[]>> {
     return await JSONFilePreset(path.resolve(this.jsonDbDirectoryPath, `${dbName}.json`), []);
-  }
-  
-  /** 引数が連想配列か否か・Array や Function も除く */
-  public isObject(item: any): boolean {
-    return item != null && item?.constructor?.name === 'Object';
   }
 }

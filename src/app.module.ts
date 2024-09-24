@@ -3,14 +3,15 @@ import { ConfigModule } from '@nestjs/config';
 
 // Imports
 import { configuration } from './core/configs/configuration';
+import { SharedModule } from './modules/shared/shared.module';
 import { JsonDbModule } from './modules/json-db/json-db.module';
+import { SqliteModule } from './modules/sqlite/sqlite.module';
 // Controllers
 import { AppController } from './app.controller';
 // Providers
 import { AppService } from './app.service';
 // Configure
 import { AccessLogMiddleware } from './core/middlewares/access-log.middleware';
-import { SharedModule } from './modules/shared/shared.module';
 
 @Module({
   imports: [
@@ -19,8 +20,9 @@ import { SharedModule } from './modules/shared/shared.module';
       isGlobal: true,  // 各 Module での `imports` を不要にする
       load: [configuration]  // 環境変数を読み取り適宜デフォルト値を割り当てるオブジェクトをロードする
     }),
+    SharedModule,
     JsonDbModule,
-    SharedModule
+    SqliteModule
   ],
   controllers: [
     AppController

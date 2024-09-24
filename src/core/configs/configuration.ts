@@ -57,5 +57,6 @@ export const configuration = (): { [key: string]: string | number | boolean } =>
   credential         : getStringValue ('CREDENTIAL'            , 'CHANGE-THIS'),  // クレデンシャル
   dbDirectoryPath    : getStringValue ('DB_DIRECTORY_PATH'     , path.resolve(__dirname, '../../../db')        ),  // DB ディレクトリ (直下にマスター DB を置く)
   jsonDbDirectoryPath: getStringValue ('JSON_DB_DIRECTORY_PATH', path.resolve(__dirname, '../../../db/json-db')),  // JSON DB 用のディレクトリ
+  sqliteDirectoryPath: getStringValue ('SQLITE_DIRECTORY_PATH' , path.resolve(__dirname, '../../../db/sqlite') ),  // SQLite 用のディレクトリ
   noColour           : getBooleanValue('NO_COLOR'                             )   // ロガーの色付けをしない : NestJS のロガー `cli-colors.util.js` と同じ環境変数名・確認のため宣言
 });

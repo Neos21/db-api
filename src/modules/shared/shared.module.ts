@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 
-import { ValidateCredentialService } from './validate-credential.service';
+import { ValidatorService } from './validator.service';
 
 @Module({
   providers: [
-    ValidateCredentialService
+    ValidatorService
   ],
   exports: [
-    ValidateCredentialService
+    ValidatorService
   ]
 })
 export class SharedModule { }
