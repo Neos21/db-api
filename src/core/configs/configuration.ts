@@ -54,7 +54,7 @@ const getBooleanValue = (envName: string): boolean => {
 /** 環境変数のオブジェクトを返す : この関数内にオブジェクトを定義しないと環境変数が読み込まれない */
 export const configuration = (): { [key: string]: string | number | boolean } => ({
   port               : getNumberValue ('PORT'                  , 5001         ),  // ポート番号
-  credential         : getStringValue ('CREDENTIAL'            , 'CHANGE-THIS'),  // クレデンシャル
+  credential         : getStringValue ('MASTER_CREDENTIAL'     , 'CHANGE-THIS'),  // クレデンシャル
   dbDirectoryPath    : getStringValue ('DB_DIRECTORY_PATH'     , path.resolve(__dirname, '../../../db')        ),  // DB ディレクトリ (直下にマスター DB を置く)
   jsonDbDirectoryPath: getStringValue ('JSON_DB_DIRECTORY_PATH', path.resolve(__dirname, '../../../db/json-db')),  // JSON DB 用のディレクトリ
   sqliteDirectoryPath: getStringValue ('SQLITE_DIRECTORY_PATH' , path.resolve(__dirname, '../../../db/sqlite') ),  // SQLite 用のディレクトリ
