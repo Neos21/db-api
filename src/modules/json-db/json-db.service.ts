@@ -28,6 +28,7 @@ export class JsonDbService {
       await fs.mkdir(this.dbDirectoryPath    , { recursive: true });
       await fs.mkdir(this.jsonDbDirectoryPath, { recursive: true });
       this.masterDb = await JSONFilePreset<MasterDbData>(path.resolve(this.dbDirectoryPath, 'master-db.json'), { databases: [] });
+      await this.masterDb.write();
     })();
   }
   

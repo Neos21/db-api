@@ -7,7 +7,7 @@ import { cyan, green, grey, red, yellow } from './colour-logger';
 export const listRoutes = (router: Express): string => {
   const endpoints: Array<expressListEndpoints.Endpoint> = expressListEndpoints(router);
   // 最長のパスに合わせて整形する
-  const longestPathLength = Math.max(...endpoints.map((endpoint) => endpoint.path.length));
+  const longestPathLength = Math.max(...endpoints.map(endpoint => endpoint.path.length));
   // メソッド別に色別けする
   const methodsColourFunctions: { [key: string]: (text: string) => string; } = {
     'GET'    : green,

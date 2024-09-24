@@ -1,8 +1,17 @@
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { ValidatorService } from '../shared/validator.service';
 import { SqliteService } from './sqlite.service';
+
+const errorSchema = {
+  type: 'object', properties: {
+    error: { type: 'string', description: 'Error Message' }
+  }
+};
+const badRequestApiResponse          = { status: HttpStatus.BAD_REQUEST          , description: 'Invalid Request', schema: errorSchema };
+const internalServerErrorApiResponse = { status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Somwthing Wrong', schema: errorSchema };
 
 @Controller('sqlite')
 export class SqliteController {
@@ -12,6 +21,15 @@ export class SqliteController {
   ) { }
   
   @Post('list-db-names')
+  @ApiOperation({ summary: 'List DB Names' })
+  @ApiBody({ schema: { type: 'object', properties: {
+    credential: { type: 'string', description: 'Credential' }
+  }}})
+  @ApiResponse({ status: HttpStatus.OK, description: 'DB Names', schema: { type: 'object', properties: {
+    db_names: { type: 'array', description: 'DB Names', items: { type: 'string' }}
+  }}})
+  @ApiResponse(badRequestApiResponse)
+  @ApiResponse(internalServerErrorApiResponse)
   public async listDbNames(@Body('credential') credential: string, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateCredential(credential, res)) return;
@@ -25,6 +43,17 @@ export class SqliteController {
   }
   
   @Post('create-db')
+  @ApiOperation({ summary: 'Create DB' })
+  @ApiBody({ schema: { type: 'object', properties: {
+    credential   : { type: 'string', description: 'Credential' },
+    db_name      : { type: 'string', description: 'DB Name' },
+    db_credential: { type: 'string', description: 'DB Credential' }
+  }}})
+  @ApiResponse({ status: HttpStatus.OK, description: 'Success Message', schema: { type: 'object', properties: {
+    result: { type: 'string', description: 'Created', example: 'Created' }
+  }}})
+  @ApiResponse(badRequestApiResponse)
+  @ApiResponse(internalServerErrorApiResponse)
   public async createDb(@Body('credential') credential: string, @Body('db_name') dbName: string, @Body('db_credential') dbCredential: string, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateCredential(credential, res)) return;
@@ -41,6 +70,17 @@ export class SqliteController {
   }
   
   @Post('delete-db')
+  @ApiOperation({ summary: 'Delete DB' })
+  @ApiBody({ schema: { type: 'object', properties: {
+    credential   : { type: 'string', description: 'Credential' },
+    db_name      : { type: 'string', description: 'DB Name' },
+    db_credential: { type: 'string', description: 'DB Credential' }
+  }}})
+  @ApiResponse({ status: HttpStatus.OK, description: 'Success Message', schema: { type: 'object', properties: {
+    result: { type: 'string', description: 'Deleted', example: 'Deleted' }
+  }}})
+  @ApiResponse(badRequestApiResponse)
+  @ApiResponse(internalServerErrorApiResponse)
   public async deleteDb(@Body('credential') credential: string, @Body('db_name') dbName: string, @Body('db_credential') dbCredential: string, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateCredential(credential, res)) return;
@@ -55,6 +95,21 @@ export class SqliteController {
   }
   
   @Post('run')
+  @ApiOperation({ summary: 'Run' })
+  @ApiBody({ schema: { type: 'object', properties: {
+    db_name      : { type: 'string', description: 'DB Name' },
+    db_credential: { type: 'string', description: 'DB Credential' },
+    sql          : { type: 'string', description: 'SQL' },
+    params       : { anyOf: [
+      { type: 'array' , description: 'Params Array', items: { type: 'object', description: 'Param Item' } },
+      { type: 'object', description: 'Params Object' }
+    ], description: 'Params', example: '{} or []' }
+  }}})
+  @ApiResponse({ status: HttpStatus.OK, description: 'Result Or Null', schema: { type: 'object', properties: {
+    result: { anyOf: [ { type: 'object', description: 'Result' }, { type: 'null' } ], description: 'Result Or Null', example: '{} or null' }
+  }}})
+  @ApiResponse(badRequestApiResponse)
+  @ApiResponse(internalServerErrorApiResponse)
   public async run(@Body('db_name') dbName: string, @Body('db_credential') dbCredential: string, @Body('sql') sql: string, @Body('params') params: Array<any> | any, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateDb(dbName, dbCredential, res)) return;
@@ -69,6 +124,21 @@ export class SqliteController {
   }
   
   @Post('get')
+  @ApiOperation({ summary: 'Get' })
+  @ApiBody({ schema: { type: 'object', properties: {
+    db_name      : { type: 'string', description: 'DB Name' },
+    db_credential: { type: 'string', description: 'DB Credential' },
+    sql          : { type: 'string', description: 'SQL' },
+    params       : { anyOf: [
+      { type: 'array' , description: 'Params Array', items: { type: 'object', description: 'Param Item' } },
+      { type: 'object', description: 'Params Object' }
+    ], description: 'Params', example: '{} or []' }
+  }}})
+  @ApiResponse({ status: HttpStatus.OK, description: 'Result Or Null', schema: { type: 'object', properties: {
+    result: { anyOf: [ { type: 'object', description: 'Result' }, { type: 'null' } ], description: 'Result Or Null', example: '{} or null' }
+  }}})
+  @ApiResponse(badRequestApiResponse)
+  @ApiResponse(internalServerErrorApiResponse)
   public async get(@Body('db_name') dbName: string, @Body('db_credential') dbCredential: string, @Body('sql') sql: string, @Body('params') params: Array<any> | any, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateDb(dbName, dbCredential, res)) return;
@@ -83,6 +153,21 @@ export class SqliteController {
   }
   
   @Post('all')
+  @ApiOperation({ summary: 'All' })
+  @ApiBody({ schema: { type: 'object', properties: {
+    db_name      : { type: 'string', description: 'DB Name' },
+    db_credential: { type: 'string', description: 'DB Credential' },
+    sql          : { type: 'string', description: 'SQL' },
+    params       : { anyOf: [
+      { type: 'array' , description: 'Params Array', items: { type: 'object', description: 'Param Item' } },
+      { type: 'object', description: 'Params Object' }
+    ], description: 'Params', example: '{} or []' }
+  }}})
+  @ApiResponse({ status: HttpStatus.OK, description: 'Results Or Null', schema: { type: 'object', properties: {
+    results: { anyOf: [ { type: 'array', items: { type: 'object', description: 'Results' } }, { type: 'null' } ], description: 'Results Or Null', example: '[{}] or null' }
+  }}})
+  @ApiResponse(badRequestApiResponse)
+  @ApiResponse(internalServerErrorApiResponse)
   public async all(@Body('db_name') dbName: string, @Body('db_credential') dbCredential: string, @Body('sql') sql: string, @Body('params') params: Array<any> | any, @Res() res: Response): Promise<Response> {
     try {
       if(!this.validateDb(dbName, dbCredential, res)) return;

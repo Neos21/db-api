@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as express from 'express';
 
 import { cyan, yellow } from './core/utils/colour-logger';
@@ -18,6 +19,18 @@ async function bootstrap() {
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Headers, Access-Control-Allow-Credentials',
     credentials: true  // `Access-Control-Allow-Credentials` を許可する
   });
+  
+  // Swagger を生成する
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Neo\'s DB API')
+    .setVersion('0.0.0')
+    .build();
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('', app, swaggerDocument, {
+    jsonDocumentUrl: 'swagger/json',
+    yamlDocumentUrl: 'swagger/yaml'
+  });
+  
   // サーバを起動する
   const port = app.get<ConfigService>(ConfigService).get<number>('port')!;
   await app.listen(port);
