@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="ls7kuvIKSqVa_dcixqKvFwl393swvYMkHCkG-xtlCj0">
+    <title>DB API</title>
+    <link rel="icon" href="https://neos21.github.io/favicon.ico">
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css">
+    <style>
+      a[href="./swagger.json"] {
+        display: none;
+      }
+      h3#operations-tag-default {
+        text-transform: capitalize;
+      }
+    </style>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LP3ZQV2R3M"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-LP3ZQV2R3M');gtag('config','UA-106501-6');</script>
+    <!-- Google AdSense -->
+    <script data-ad-client="ca-pub-6475907504235292" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    
+    <hr>
+    <h2>Links</h2>
+    <ul>
+      <li><a href="https://neos21.net/">Neo's World</a></li>
+      <li><a href="https://github.com/Neos21">GitHub - Neos21</a></li>
+      <li><a href="https://github.com/Neos21/db-api">GitHub - db-api</a></li>
+      <li><a href="https://neos21.github.io/db-api/">GitHub Pages - DB API</a></li>
+    </ul>
+    
+    <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js" crossorigin></script>
+    <script>
+      window.addEventListener('load', () => {
+        window.ui = SwaggerUIBundle({
+          url: './swagger.json',
+          dom_id: '#swagger-ui',
+        });
+      });
+    </script>
+  </body>
+</html>

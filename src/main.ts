@@ -1,3 +1,5 @@
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -22,7 +24,7 @@ async function bootstrap() {
   
   // Swagger を生成する
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Neo\'s DB API')
+    .setTitle('DB API')
     .setVersion('0.0.0')
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
@@ -30,6 +32,9 @@ async function bootstrap() {
     jsonDocumentUrl: 'swagger/json',
     yamlDocumentUrl: 'swagger/yaml'
   });
+  // Swagger JSON を書き出す (GitHub Pages 用・`./docs/index.html` は Swagger UI のモノを利用)
+  await fs.mkdir(path.resolve(__dirname, '../docs'), { recursive: true });
+  await fs.writeFile(path.resolve(__dirname, '../docs/swagger.json'), JSON.stringify(swaggerDocument), 'utf-8');
   
   // サーバを起動する
   const port = app.get<ConfigService>(ConfigService).get<number>('port')!;

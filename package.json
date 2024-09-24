@@ -6,6 +6,7 @@
     "start": "node ./dist/main.js",
     "build": "nest build",
     "dev": "nest start --debug --watch",
+    "docs": "npx sirv-cli ./docs/ --host --dev",
     "nest": "nest"
   },
   "author": "Neo <neos21@gmail.com> (https://neos21.net/)",
