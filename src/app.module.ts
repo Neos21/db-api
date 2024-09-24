@@ -1,11 +1,12 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { AccessLogMiddleware } from './core/middlewares/access-log.middleware';
 import { configuration } from './core/configs/configuration';
 import { SharedModule } from './modules/shared/shared.module';
 import { JsonDbModule } from './modules/json-db/json-db.module';
 import { SqliteModule } from './modules/sqlite/sqlite.module';
+import { AppController } from './app.controller';
+import { AccessLogMiddleware } from './core/middlewares/access-log.middleware';
 
 @Module({
   imports: [
@@ -17,6 +18,9 @@ import { SqliteModule } from './modules/sqlite/sqlite.module';
     SharedModule,
     JsonDbModule,
     SqliteModule
+  ],
+  controllers: [
+    AppController
   ]
 })
 export class AppModule {
