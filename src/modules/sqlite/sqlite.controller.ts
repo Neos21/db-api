@@ -11,7 +11,7 @@ const errorSchema = {
   }
 };
 const badRequestApiResponse          = { status: HttpStatus.BAD_REQUEST          , description: 'Invalid Request', schema: errorSchema };
-const internalServerErrorApiResponse = { status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Somwthing Wrong', schema: errorSchema };
+const internalServerErrorApiResponse = { status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'Something Wrong', schema: errorSchema };
 
 @Controller('sqlite')
 export class SqliteController {
